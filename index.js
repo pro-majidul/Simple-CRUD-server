@@ -46,8 +46,25 @@ async function run() {
         app.get('/user/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
-            const users =await userCollection.findOne(query);
+            const users = await userCollection.findOne(query);
             res.send(users)
+        })
+
+        //update data 
+        app.put('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updateUser ={
+                $set:{
+                    name :user.name ,
+                    email : user.email,
+                }
+            }
+            const result = await userCollection.updateOne(filter,updateUser,options)
+            res.send(result)
+
         })
 
         // data database e pathanor jonne ba data post kora ba data Create kora 
@@ -62,7 +79,7 @@ async function run() {
         app.delete('/user/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
-            const result =await userCollection.deleteOne(query);
+            const result = await userCollection.deleteOne(query);
             res.send(result)
         })
 
