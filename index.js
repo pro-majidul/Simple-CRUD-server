@@ -35,12 +35,21 @@ async function run() {
         const database = client.db("usersDB");
         const userCollection = database.collection("user");
 
-        // data get korar jonne ba read korar jonne
+        // all data get korar jonne ba read korar jonne
         app.get('/user', async (req, res) => {
             const cursor = userCollection.find();
             const result = await cursor.toArray();
             res.send(result)
         })
+
+        // single data get korar jonne 
+        app.get('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const users =await userCollection.findOne(query);
+            res.send(users)
+        })
+
         // data database e pathanor jonne ba data post kora ba data Create kora 
         app.post('/user', async (req, res) => {
             const newUsers = req.body;
@@ -53,7 +62,7 @@ async function run() {
         app.delete('/user/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
-            const result = userCollection.deleteOne(query);
+            const result =await userCollection.deleteOne(query);
             res.send(result)
         })
 
